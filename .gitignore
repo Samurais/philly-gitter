@@ -1,0 +1,12 @@
+.idea
+*.iml
+*.log
+*.env
+!dot-EXAMPLE.env
+node_modules
+.DS_Store
+Thumbs.db
+data/wiki
+config.json
+config/environment/development.js
+config/environment/production.js
