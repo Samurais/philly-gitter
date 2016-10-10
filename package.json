@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "dependencies": {
     "cli-color": "*",
+    "co": "^4.6.0",
+    "debug": "^2.2.0",
     "lodash": "^3.10.1",
     "node-gitter": "^1.2.8",
     "parseproxy": "^1.0.3",

@@ -86,6 +86,11 @@ const AppConfig = {
 
     dmLink: function() {
         return 'https://gitter.im/' + AppConfig.getBotName();
+    },
+    parse: {
+        appId: 'philly_parse_local',
+        serverURL: 'http://localhost:1337/parse',
+        javascriptKey: '',
     }
 };
 

@@ -25,6 +25,7 @@ GBot.prototype.init = function(options) {
     // TODO refresh and add oneToOne rooms
     this.roomList = [];
     this.listReplyOptions = [];
+    this.handleMessage = options.onMessage || console.log;
     this.gitter = new Gitter(AppConfig.token);
     this.joinKnownRooms();
 
@@ -66,7 +67,7 @@ GBot.prototype.listenToRoom = function(room) {
         }
 
         message.room = room;
-        this.handleReply(message);
+        this.handleMessage(message);
     });
 }
 
