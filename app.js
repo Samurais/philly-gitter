@@ -5,6 +5,7 @@ const AppConfig = require('./config/environment'),
     Gitter = require('node-gitter'),
     GitterApiClient = require('./services/gitter.proxy.js');
 
+
 function clog(msg, obj) {
     Utils.clog('GBot>', msg, obj);
 }
@@ -61,23 +62,19 @@ const GBot = {
     handleReply: function(message) {
         clog(message.room.uri + ' @' + message.model.fromUser.username + ':');
         clog(' in|', message.model.text);
-        const output = 'happen ';
+        const output = 'happen';
         // const output = this.findAnyReply(message);
         if (output) {
-            clog('out| ', output);
+            clog('out|', output);
             GBot.say(output, message.room);
         }
-        // for debugging
         return output;
     },
 
     // using a callback to get roomId
-    sayToRoom: function(text, roomName) {
-        const sayIt = () => {
-            console.log('sayIt', text, roomName);
-            GBot.say(text, roomName);
-        };
-        GitterApiClient.findRoomByName(roomName, sayIt);
+    sayToRoomByUrl: function(text, roomUrl) {
+        let room = this.getRoomByUrl(roomUrl);
+        GBot.say(text, room);
     },
 
     say: function(text, room) {
@@ -189,6 +186,25 @@ const GBot = {
         return true;
     },
 
+    /**
+     * [getRoomByUri description]
+     * @param  {[type]} roomUrl [description]
+     * @return {[type]}         [description]
+     */
+    getRoomByUrl: function(roomUrl) {
+        const checks = this.roomList.filter(rm => {
+            let result = (('/' + rm.uri) === roomUrl);
+            return result;
+        });
+
+        const oneRoom = checks[0];
+        if (!oneRoom) {
+            Utils.warn('GBot', 'Not found room:', roomUrl);
+            return false;
+        }
+
+        return oneRoom;
+    },
     // checks if a room is already in bots internal list of joined rooms
     // this is to avoid listening twice
     // see https://github.com/gitterHQ/node-gitter/issues/15
