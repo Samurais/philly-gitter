@@ -18,7 +18,10 @@ gbot.init({
     onMessage: function(message) {
         co(function*() {
             let messageInboundData = {
+                // Currently, only send/reply with room
+                // so, regard each room as a user
                 fromUserId: message.model.fromUser.username,
+                // fromUserId: message.room.url,
                 fromGroupId: message.room.url,
                 channel: 'gitter',
                 type: 'textMessage',
@@ -35,10 +38,17 @@ gbot.init({
 parseproxy.subscribeMessageOutbound({
     onCreate: co.wrap(function*(messageOutbound) {
         debug('messageOutboundData', JSON.stringify(messageOutbound));
-        let messageInbound = yield messageOutbound.get('replyToInboundMessage').fetch();
+        let messageInbound;
+        if (messageOutbound.get('replyToInboundMessage'))
+            messageInbound = yield messageOutbound.get('replyToInboundMessage').fetch();
         try {
-            debug('messageOutboundResponse', messageOutbound.get('textMessage'));
-            gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), messageInbound.get('fromGroupId'));
+            if (messageInbound) {
+                debug('messageOutboundResponse', messageOutbound.get('textMessage'));
+                gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), messageInbound.get('fromGroupId'));
+            } else if (messageOutbound.get('toUserId') === 'Samurais') {
+                console.log('say to Samurais >>', messageOutbound.get('textMessage'));
+                gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), '/imrockq/philly');
+            }
         } catch (e) {
             console.error(e);
         }
@@ -46,5 +56,5 @@ parseproxy.subscribeMessageOutbound({
 }, [{
     ref: 'equalTo',
     key: 'channel',
-    value: 'gitter'
+    val: 'gitter'
 }]);
