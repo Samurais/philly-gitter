@@ -14,7 +14,7 @@ const AppConfig = {
     clientId: process.env.GITTER_APP_KEY,
     token: config.gitterUserToken,
     supportDmRooms: false,
-    botname: null,
+    botname: 'philly',
     roomId: '55b1a9030fc9f982beaac901',
     rooms: config.rooms,
     org: 'bothelp',

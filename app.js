@@ -33,6 +33,8 @@ gbot.init({
     }
 });
 
+// gbot.init();
+
 
 /** register handler onCreate event. */
 parseproxy.subscribeMessageOutbound({

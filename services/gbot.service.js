@@ -25,7 +25,11 @@ GBot.prototype.init = function(options) {
     // TODO refresh and add oneToOne rooms
     this.roomList = [];
     this.listReplyOptions = [];
-    this.handleMessage = options.onMessage || console.log;
+    if (options && options.onMessage) {
+        this.handleMessage = options.onMessage;
+    } else {
+        this.handleMessage = console.log;
+    }
     this.gitter = new Gitter(AppConfig.token);
     this.joinKnownRooms();
 
