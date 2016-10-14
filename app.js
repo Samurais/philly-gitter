@@ -27,8 +27,8 @@ gbot.init({
                 type: 'textMessage',
                 textMessage: message.model.text
             };
-            debug('>> messageInboundData', JSON.stringify(messageInboundData));
-            yield parseproxy.createMessageInbound(messageInboundData);
+            let messageInbound = yield parseproxy.createMessageInbound(messageInboundData);
+            debug('>> messageInboundData', messageInbound.toJSON());
         });
     }
 });
@@ -46,7 +46,7 @@ parseproxy.subscribeMessageOutbound({
         try {
             if (messageInbound) {
                 debug('messageOutboundResponse', messageOutbound.get('textMessage'));
-                gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), messageInbound.get('fromGroupId'));
+                gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), messageInbound.get('fromGroupId') || '/imrockq/philly');
             } else if (messageOutbound.get('toUserId') === 'Samurais') {
                 console.log('say to Samurais >>', messageOutbound.get('textMessage'));
                 gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), '/imrockq/philly');
