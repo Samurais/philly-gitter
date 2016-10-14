@@ -5,6 +5,8 @@ const _ = require('lodash'),
 
 var env = process.env.NODE_ENV || 'development';
 
+
+console.log('NODE_ENV', env);
 env = env.toLowerCase();
 const config = require('./' + env + '.js') || {};
 
@@ -87,11 +89,7 @@ const AppConfig = {
     dmLink: function() {
         return 'https://gitter.im/' + AppConfig.getBotName();
     },
-    parse: {
-        appId: 'philly_parse_local',
-        serverURL: 'http://localhost:1337/parse',
-        javascriptKey: '',
-    }
+    parse: config.parse
 };
 
 module.exports = AppConfig;

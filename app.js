@@ -7,6 +7,9 @@ const parseproxy = require('parseproxy'),
     debug = require('debug')('gbot');
 
 /** init parse sdk */
+console.log('parse.url', config.parse.serverURL);
+console.log('parse.appid', config.parse.appId);
+console.log('parse.javascriptKey', config.parse.javascriptKey);
 parseproxy.init(config.parse.serverURL, config.parse.appId, config.parse.javascriptKey);
 
 /**
