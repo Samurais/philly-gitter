@@ -56,7 +56,7 @@ parseproxy.subscribeMessageOutbound({
                 gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), messageInbound.get('fromGroupId') || config.fallbackRoom);
             } else if (messageOutbound.get('toUserId') === 'Samurais') {
                 logger.info('say to Samurais >>', messageOutbound.get('textMessage'));
-                gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), '/imrockq/philly');
+                gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), config.fallbackRoom);
             }
         } catch (e) {
             console.error(e);
