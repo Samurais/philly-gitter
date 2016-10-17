@@ -19,6 +19,7 @@ const AppConfig = {
     botname: 'philly',
     roomId: '55b1a9030fc9f982beaac901',
     rooms: config.rooms,
+    "fallbackRoom": "imrockq/philly",
     org: 'bothelp',
     testUser: 'bothelp',
     // so bot doesnt get in a loop replying itself
