@@ -8,5 +8,6 @@ node_modules
 Thumbs.db
 data/wiki
 config.json
+config/log4js.json
 config/environment/development.js
 config/environment/production.js

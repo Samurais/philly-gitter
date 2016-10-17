@@ -7,15 +7,12 @@
 const AppConfig = require('../config/environment'),
     Utils = require('../utils/Utils'),
     Gitter = require('node-gitter'),
-    GitterApiClient = require('./gitter.proxy.js');
+    GitterApiClient = require('./gitter.proxy.js'),
+    logger = require('./logging').getLogger('gbot.service');
 
 let apiWait = 0;
 let apiDelay = 1000;
 
-
-function clog(msg, obj) {
-    Utils.clog('GBot>', msg, obj);
-}
 
 var GBot = function() {
 
@@ -38,7 +35,7 @@ GBot.prototype.init = function(options) {
         this.gitter.currentUser().then(user => {
             this.scanRooms(user, AppConfig.token);
         }, err => {
-            Utils.error('GBot.currentUser>', 'failed', err);
+            logger.error('GBot.currentUser>', 'failed', err);
         });
     }
 }
@@ -71,17 +68,19 @@ GBot.prototype.listenToRoom = function(room) {
         }
 
         message.room = room;
+        logger.warn('chats.onMessage', message);
+
         this.handleMessage(message);
     });
 }
 
 GBot.prototype.handleReply = function(message) {
-    clog(message.room.uri + ' @' + message.model.fromUser.username + ':');
-    clog(' in|', message.model.text);
+    logger.info(message.room.uri + ' @' + message.model.fromUser.username + ':');
+    logger.info(' in|', message.model.text);
     const output = 'happen';
     // const output = this.findAnyReply(message);
     if (output) {
-        clog('out|', output);
+        logger.info('out|', output);
         this.say(output, message.room);
     }
     return output;
@@ -107,8 +106,8 @@ GBot.prototype.say = function(text, room) {
     try {
         GitterApiClient.sayToRoomName(text, room.uri);
     } catch (err) {
-        Utils.warn('GBot.say>', 'failed', err);
-        Utils.warn('GBot.say>', 'room', room);
+        logger.warn('failed', err);
+        logger.warn('room', room);
     }
 }
 
@@ -137,7 +136,7 @@ GBot.prototype.getRoomByUrl = function(roomUrl) {
 
     const oneRoom = checks[0];
     if (!oneRoom) {
-        Utils.warn('GBot', 'Not found room:', roomUrl);
+        logger.warn('GBot', 'Not found room:', roomUrl);
         return false;
     }
 
@@ -157,7 +156,7 @@ GBot.prototype.hasAlreadyJoined = function(room) {
 
     const oneRoom = checks[0];
     if (oneRoom) {
-        Utils.warn('GBot', 'hasAlreadyJoined:', oneRoom.url);
+        logger.warn('GBot', 'hasAlreadyJoined:', oneRoom.url);
         return true;
     }
 
@@ -182,7 +181,7 @@ GBot.prototype.isBot = function(who) {
 // this joins rooms contained in the data/RoomData.js file
 // ie a set of bot specific discussion rooms
 GBot.prototype.joinKnownRooms = function() {
-    clog('botname on rooms', AppConfig.getBotName());
+    logger.info('botname on rooms', AppConfig.getBotName());
 
     AppConfig.rooms.map(oneRoomData => {
         const roomUrl = oneRoomData.name;
@@ -195,10 +194,10 @@ GBot.prototype.delayedJoin = function(roomUrl) {
     setTimeout(() => {
         this.gitter.rooms.join(roomUrl, (err, room) => {
             if (err) {
-                Utils.warn('Not possible to join the room:', roomUrl, err);
+                logger.warn('Not possible to join the room:', roomUrl, err);
                 return;
             }
-            clog('joined> ', room.name);
+            logger.info('joined> ', room.name);
             this.listenToRoom(room);
         });
     }, apiWait);
@@ -211,20 +210,20 @@ GBot.prototype.delayedJoin = function(roomUrl) {
 // as I can't see an event the bot would get to know about that
 // so its kind of like 'polling' and currently only called from the webUI
 GBot.prototype.scanRooms = function(user, token) {
-    clog('user', user);
-    clog('token', token);
+    logger.info('user', user);
+    logger.info('token', token);
     GitterApiClient.fetchRooms(user, token, (err, rooms) => {
         if (err) {
-            Utils.warn('GBot', 'fetchRooms', err);
+            logger.warn('GBot', 'fetchRooms', err);
         }
         if (!rooms) {
-            Utils.warn('cant scanRooms');
+            logger.warn('cant scanRooms');
             return;
         }
-        clog('scanRooms.rooms', rooms);
+        logger.info('scanRooms.rooms', rooms);
         rooms.map(room => {
             if (room.oneToOne) {
-                clog('oneToOne', room.name);
+                logger.info('oneToOne', room.name);
                 this.gitter.rooms.find(room.id)
                     .then(roomObj => {
                         this.listenToRoom(roomObj);
@@ -240,10 +239,10 @@ GBot.prototype.updateRooms = function() {
     this.gitter.currentUser()
         .then(user => {
             const list = user.rooms((err, obj) => {
-                clog('rooms', err, obj);
+                logger.info('rooms', err, obj);
             });
-            clog('user', user);
-            clog('list', list);
+            logger.info('user', user);
+            logger.info('list', list);
             return list;
         });
 }

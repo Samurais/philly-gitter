@@ -4,12 +4,12 @@ var GBot = require('./services/gbot.service');
 const parseproxy = require('parseproxy'),
     config = require('./config/environment'),
     co = require('co'),
-    debug = require('debug')('gbot');
+    logger = require('./services/logging').getLogger('app');
 
 /** init parse sdk */
-console.log('parse.url', config.parse.serverURL);
-console.log('parse.appid', config.parse.appId);
-console.log('parse.javascriptKey', config.parse.javascriptKey);
+logger.info('parse.url', config.parse.serverURL);
+logger.info('parse.appid', config.parse.appId);
+logger.info('parse.javascriptKey', config.parse.javascriptKey);
 parseproxy.init(config.parse.serverURL, config.parse.appId, config.parse.javascriptKey);
 
 /**
@@ -31,7 +31,10 @@ gbot.init({
                 textMessage: message.model.text
             };
             let messageInbound = yield parseproxy.createMessageInbound(messageInboundData);
-            debug('>> messageInboundData', messageInbound.toJSON());
+            logger.debug('>> messageInboundData', messageInbound.toJSON());
+        })
+        .catch(function(e){
+            logger.error(e);
         });
     }
 });
@@ -42,17 +45,17 @@ gbot.init({
 /** register handler onCreate event. */
 parseproxy.subscribeMessageOutbound({
     onCreate: co.wrap(function*(messageOutbound) {
-        debug('messageOutboundData', JSON.stringify(messageOutbound));
+        logger.debug('messageOutboundData', JSON.stringify(messageOutbound));
         let messageInbound;
         if (messageOutbound.get('replyToInboundMessage'))
             messageInbound = yield messageOutbound.get('replyToInboundMessage').fetch();
         try {
             if (messageInbound) {
-                debug('messageOutboundResponse', messageOutbound.get('textMessage'));
-                debug('messageOutboundResponse fromGroupId', messageInbound.get('fromGroupId'));
+                logger.debug('messageOutboundResponse', messageOutbound.get('textMessage'));
+                logger.debug('messageOutboundResponse fromGroupId', messageInbound.get('fromGroupId'));
                 gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), messageInbound.get('fromGroupId') || '/imrockq/philly');
             } else if (messageOutbound.get('toUserId') === 'Samurais') {
-                console.log('say to Samurais >>', messageOutbound.get('textMessage'));
+                logger.info('say to Samurais >>', messageOutbound.get('textMessage'));
                 gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), '/imrockq/philly');
             }
         } catch (e) {
