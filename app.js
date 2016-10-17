@@ -49,6 +49,7 @@ parseproxy.subscribeMessageOutbound({
         try {
             if (messageInbound) {
                 debug('messageOutboundResponse', messageOutbound.get('textMessage'));
+                debug('messageOutboundResponse fromGroupId', messageInbound.get('fromGroupId'));
                 gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), messageInbound.get('fromGroupId') || '/imrockq/philly');
             } else if (messageOutbound.get('toUserId') === 'Samurais') {
                 console.log('say to Samurais >>', messageOutbound.get('textMessage'));
