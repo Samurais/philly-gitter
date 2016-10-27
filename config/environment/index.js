@@ -93,7 +93,7 @@ const AppConfig = {
 
     },
     superscript: {
-        botId: 'default'
+        botId: 1999
     }
 };
 
