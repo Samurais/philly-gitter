@@ -28,7 +28,8 @@ gbot.init({
                     fromGroupId: message.room.url,
                     channel: 'gitter',
                     type: 'textMessage',
-                    textMessage: message.model.text
+                    textMessage: message.model.text,
+                    botId: config.superscript.botId
                 };
                 let messageInbound = yield parseproxy.createMessageInbound(messageInboundData);
                 logger.debug('>> messageInboundData', messageInbound.toJSON());
@@ -66,4 +67,8 @@ parseproxy.subscribeMessageOutbound({
     ref: 'equalTo',
     key: 'channel',
     val: 'gitter'
+}, {
+    ref: 'equalTo',
+    key: 'botId',
+    val: config.superscript.botId
 }]);
