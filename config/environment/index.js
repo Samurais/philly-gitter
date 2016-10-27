@@ -18,8 +18,8 @@ const AppConfig = {
     supportDmRooms: false,
     botname: 'philly',
     roomId: '55b1a9030fc9f982beaac901',
-    rooms: config.rooms,
-    fallbackRoom: config.fallbackRoom,
+    rooms: [],
+    fallbackRoom: '',
     org: 'bothelp',
     testUser: 'bothelp',
     // so bot doesnt get in a loop replying itself
@@ -28,14 +28,13 @@ const AppConfig = {
     gitterHost: 'https://gitter.im/',
     botVersion: '0.0.12',
     botNoiseLevel: 1,
-    serverEnv: config.serverEnv,
     serverEnv: config.serverEnv || "Functional-Account",
     gitterUserToken: config.gitterUserToken || "",
     gitterAppKey: config.gitterAppKey || "",
     gitterAppSecret: config.gitterAppSecret || "",
     logLevel: 10,
 
-    showConfig: function() {
+    showConfig: function () {
         console.log('AppConfig');
         Object.keys(AppConfig)
             .sort()
@@ -46,14 +45,14 @@ const AppConfig = {
             });
     },
 
-    warn: function(msg, obj) {
+    warn: function (msg, obj) {
         console.warn('WARN> AppConfig', msg, obj);
     },
 
     // TODO cleanup
     // use as a function so it can be set at startup
     // before other code calls it at runtime
-    getBotName: function() {
+    getBotName: function () {
         if (!AppConfig.botname) {
             this.warn('getBotName()', AppConfig.botname);
             console.log('tried to call botname before it was set');
@@ -61,7 +60,7 @@ const AppConfig = {
         return AppConfig.botname;
     },
 
-    who: function(req) {
+    who: function (req) {
         let who;
 
         if (req.user) {
@@ -75,11 +74,11 @@ const AppConfig = {
     },
 
     // TODO read from config file for dev/live modes and running env
-    getOrg: function() {
+    getOrg: function () {
         return AppConfig.org;
     },
 
-    topicDmUri: function(topic) {
+    topicDmUri: function (topic) {
         let uri = AppConfig.appHost + '/go?dm=y&room=' + AppConfig.getBotName();
         if (topic) {
             uri += '&topic=' + topic;
@@ -87,10 +86,15 @@ const AppConfig = {
         return uri;
     },
 
-    dmLink: function() {
+    dmLink: function () {
         return 'https://gitter.im/' + AppConfig.getBotName();
     },
-    parse: config.parse
+    parse: {
+
+    },
+    superscript: {
+        botId: 'default'
+    }
 };
 
-module.exports = AppConfig;
+module.exports = _.assign(AppConfig, config);
