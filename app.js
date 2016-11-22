@@ -54,9 +54,10 @@ parseproxy.subscribeMessageOutbound({
             if (messageInbound) {
                 logger.debug('messageOutboundResponse', messageOutbound.get('textMessage'));
                 logger.debug('messageOutboundResponse fromGroupId', messageInbound.get('fromGroupId') || 'None.');
+                logger.debug('messageOutboundResponse toJSON', messageOutbound.toJSON());
                 gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), messageInbound.get('fromGroupId') || config.fallbackRoom);
             } else if (messageOutbound.get('toUserId') === 'Samurais') {
-                logger.info('say to Samurais >>', messageOutbound.get('textMessage'));
+                logger.info('say to Samurais >>', messageOutbound.toJSON());
                 gbot.sayToRoomByUrl(messageOutbound.get('textMessage'), config.fallbackRoom);
             }
         } catch (e) {
