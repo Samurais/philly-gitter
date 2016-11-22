@@ -7,7 +7,7 @@
     "lodash": "^3.10.1",
     "log4js": "^0.6.38",
     "node-gitter": "^1.2.8",
-    "parseproxy": "^1.0.4",
+    "parseproxy": "^1.3.0",
     "request": "~2.27.0"
   },
   "devDependencies": {
